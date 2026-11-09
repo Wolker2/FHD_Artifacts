@@ -1,0 +1,11 @@
+{
+  "version": "0.8.24.2",
+  "channel": "TEST",
+  "mod_files": 58,
+  "original_install_sha256": "57dc4b0fa01e33e7bff8ebb8dc49cc166673e666afc364672236928d38fb2372",
+  "item_png": 40,
+  "frame_png": 39,
+  "in_game_tested": false,
+  "dll_source_provided": false,
+  "dat_editable_text_verified": false
+}
