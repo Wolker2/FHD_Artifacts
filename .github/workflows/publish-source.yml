@@ -1,0 +1,41 @@
+name: Publish FHD Artifacts 0.8.24.2 sources
+
+on:
+  push:
+    paths:
+      - ".github/workflows/publish-source.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  export-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install source conversion toolkit
+        run: git clone --depth=1 https://github.com/Xenomorphchyma/SRHD-XenoModKit.git /tmp/SRHD-XenoModKit
+      - name: Generate editable sources and verify unmodified install
+        run: |
+          export PYTHONPATH=/tmp/SRHD-XenoModKit
+          python tools/artifacts_publish.py --export
+          cd FHD_Artifacts_0.8.24.2_TEST_SMART_MAGNET_CARGO_LIMIT_Nexus-GitHub
+          python BUILD.py --verify
+          sha256sum BASE_INSTALL.zip DIST/*.zip
+      - name: Commit source folder
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- FHD_Artifacts_0.8.24.2_TEST_SMART_MAGNET_CARGO_LIMIT_Nexus-GitHub
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish editable FHD_Artifacts 0.8.24.2 source package"
+            git push origin HEAD:main
+          fi
